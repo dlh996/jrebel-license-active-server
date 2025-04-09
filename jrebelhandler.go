@@ -30,7 +30,7 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 	loggingRequest(r)
 	host := "http://" + r.Host
 	if config.BasePath != "" {
-		host = "http://" + r.Host + config.BasePath
+		host = "http://" + r.Host + "/" + config.BasePath
 	}
 	w.Header().Set("content-type", "text/html; charset=utf-8")
 	w.WriteHeader(200)
