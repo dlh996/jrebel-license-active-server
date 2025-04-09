@@ -13,6 +13,7 @@ type Config struct {
 	OfflineDefault bool
 	OfflineDays    int
 	LogLevel       int64
+	BasePath       string
 }
 
 var config = &Config{
@@ -20,6 +21,7 @@ var config = &Config{
 	OfflineDefault: true,
 	OfflineDays:    30,
 	LogLevel:       Info,
+	BasePath:       "",
 }
 
 var logger = NewLogger(os.Stdout, Info, log.Ldate|log.Ltime)
@@ -46,6 +48,10 @@ func initConfig(args []string) {
 				}
 			}
 		}
+		if strings.HasPrefix(v, "--path=") {
+			i := strings.ReplaceAll(v, "--path=", "")
+			config.BasePath = i
+		}
 
 	}
 }
@@ -53,16 +59,27 @@ func initConfig(args []string) {
 func main() {
 	initConfig(os.Args[1:])
 	logger.SetLevel(config.LogLevel)
-
-	http.HandleFunc("/", indexHandler)
-	http.HandleFunc("/jrebel/leases", jrebelLeasesHandler)
-	http.HandleFunc("/jrebel/leases/1", jrebelLeases1Handler)
-	http.HandleFunc("/agent/leases", jrebelLeasesHandler)
-	http.HandleFunc("/agent/leases/1", jrebelLeases1Handler)
-	http.HandleFunc("/jrebel/validate-connection", jrebelValidateHandler)
-	http.HandleFunc("/rpc/ping.action", pingHandler)
-	http.HandleFunc("/rpc/obtainTicket.action", obtainTicketHandler)
-	http.HandleFunc("/rpc/releaseTicket.action", releaseTicketHandler)
+	if config.BasePath != "" {
+		http.HandleFunc("/"+config.BasePath+"/", indexHandler)
+		http.HandleFunc("/"+config.BasePath+"/jrebel/leases", jrebelLeasesHandler)
+		http.HandleFunc("/"+config.BasePath+"/jrebel/leases/1", jrebelLeases1Handler)
+		http.HandleFunc("/"+config.BasePath+"/agent/leases", jrebelLeasesHandler)
+		http.HandleFunc("/"+config.BasePath+"/agent/leases/1", jrebelLeases1Handler)
+		http.HandleFunc("/"+config.BasePath+"/jrebel/validate-connection", jrebelValidateHandler)
+		http.HandleFunc("/"+config.BasePath+"/rpc/ping.action", pingHandler)
+		http.HandleFunc("/"+config.BasePath+"/rpc/obtainTicket.action", obtainTicketHandler)
+		http.HandleFunc("/"+config.BasePath+"/rpc/releaseTicket.action", releaseTicketHandler)
+	} else {
+		http.HandleFunc("/", indexHandler)
+		http.HandleFunc("/jrebel/leases", jrebelLeasesHandler)
+		http.HandleFunc("/jrebel/leases/1", jrebelLeases1Handler)
+		http.HandleFunc("/agent/leases", jrebelLeasesHandler)
+		http.HandleFunc("/agent/leases/1", jrebelLeases1Handler)
+		http.HandleFunc("/jrebel/validate-connection", jrebelValidateHandler)
+		http.HandleFunc("/rpc/ping.action", pingHandler)
+		http.HandleFunc("/rpc/obtainTicket.action", obtainTicketHandler)
+		http.HandleFunc("/rpc/releaseTicket.action", releaseTicketHandler)
+	}
 
 	logger.Infof("Start server with port = %d\n", config.Port)
 

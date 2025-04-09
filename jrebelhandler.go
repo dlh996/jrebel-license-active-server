@@ -29,7 +29,9 @@ func loggingRequest(r *http.Request) {
 func indexHandler(w http.ResponseWriter, r *http.Request) {
 	loggingRequest(r)
 	host := "http://" + r.Host
-
+	if config.BasePath != "" {
+		host = "http://" + r.Host + config.BasePath
+	}
 	w.Header().Set("content-type", "text/html; charset=utf-8")
 	w.WriteHeader(200)
 	html := `<h1>Hello,This is a Jrebel License Server!</h1>
