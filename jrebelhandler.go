@@ -251,9 +251,9 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 
 	var host string
 	if len(config.ExportHost) == 0 {
-		host = config.ExportSchema + "://" + r.Host + "/" + config.BasePath + "/"
+		host = config.ExportSchema + "://" + r.Host + "/" + config.BasePath
 	} else {
-		host = config.ExportSchema + "://" + config.ExportHost + "/" + config.BasePath + "/"
+		host = config.ExportSchema + "://" + config.ExportHost + "/" + config.BasePath
 	}
 	uuid := newUUIDV4String()
 
