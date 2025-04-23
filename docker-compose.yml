@@ -10,4 +10,4 @@ services:
     ports: 
       - "12345:12345"
     restart: unless-stopped
-    command: ./jrebel-license-active-server --path=act-rebel
+    command: ./jrebel-license-active-server --basePath=act-rebel
