@@ -1,13 +1,13 @@
 networks:
-    1panel-network:
-        external: true
+  1panel-network:
+    external: true
 services:
   jrebel-license-active-server:
     image: jrebel-license-active-server:latest
     container_name: jrebel-server
     networks:
       - 1panel-network
-    ports: 
+    ports:
       - "12345:12345"
     restart: unless-stopped
-    command: ./jrebel-license-active-server --basePath=act-rebel
+    command: ./jrebel-license-active-server --basePath=act-rebel --exportSchema=https
